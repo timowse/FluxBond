@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "FluxBond",
+  "version": "1.0.0",
+  "identifier": "com.timowse.fluxbond",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "popup",
+        "title": "FluxBond",
+        "width": 360,
+        "height": 533,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
+        "decorations": false,
+        "transparent": true,
+        "shadow": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "visible": false,
+        "windowEffects": { "effects": ["mica"] }
+      }
+    ],
+    "security": { "csp": null },
+    "macOSPrivateApi": true
+  },
+  "bundle": {
+    "active": true,
+    "publisher": "Timo Wiese",
+    "category": "Utility",
+    "copyright": "Copyright © 2026 Timo Wiese and Uditya Kumar. MIT License.",
+    "shortDescription": "Combines Wi-Fi, Ethernet and a tethered phone into one faster connection",
+    "longDescription": "FluxBond sends each new connection through the network where it can expect the most bandwidth: Wi-Fi, Ethernet or a USB-tethered phone. A single download gets faster only if it opens several connections.",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDMzNERGRjQzNDFFNTlBNjgKUldSb211VkJRLzlOTTdBWVl1T0p5L1RYelk1aFBjQ1VHODZWUEdrYi95TXRNdFpJOWlSNG5zVjgK",
+      "endpoints": ["https://github.com/timowse/FluxBond/releases/latest/download/latest.json"],
+      "requireSignedVersion": true
+    }
+  }
+}

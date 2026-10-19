@@ -1,0 +1,51 @@
+[package]
+name = "fluxbond"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+description = "Combines Wi-Fi, Ethernet and a tethered phone into one faster connection"
+repository = "https://github.com/timowse/FluxBond"
+
+[lib]
+name = "fluxbond_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png", "macos-private-api"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+ipstack = "1"
+tun = { version = "0.8", features = ["async"] }
+netdev = "0.46"
+socket2 = { version = "0.6", features = ["all"] }
+etherparse = "0.20"
+log = "0.4"
+tauri-plugin-updater = "2.14.0"
+tauri-plugin-process = "2.4.0"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = [
+    "Win32_Foundation",
+    "Win32_Networking_WinSock",
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_NetworkManagement_Ndis",
+    "Win32_Security",
+    "Win32_Security_Authorization",
+    "Win32_System_Threading",
+    "Win32_System_IO",
+    "Win32_System_SystemInformation",
+    "Win32_UI_Shell",
+    "Win32_UI_WindowsAndMessaging",
+] }
+
+[target.'cfg(any(target_os = "linux", target_os = "macos"))'.dependencies]
+libc = "0.2"
+
+[dev-dependencies]
+# What the updater plugin verifies downloads with, to check release assets the same way.
+base64 = "0.22"
+minisign-verify = "0.3"

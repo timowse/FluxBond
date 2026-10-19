@@ -1,0 +1,72 @@
+//! Relays one captured UDP flow (one app socket talking to one destination)
+//! through the network the balancer picks.
+
+use std::io;
+use std::sync::Arc;
+
+use ipstack::IpStackUdpStream;
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
+
+use super::flows::Flow;
+use crate::net::router::Router;
+
+const DNS_PORT: u16 = 53;
+const MAX_DATAGRAM: usize = 64 * 1024;
+
+pub async fn handle(inbound: IpStackUdpStream, router: Arc<Router>, flow: Arc<Flow>) {
+    let dst = flow.dst;
+    // QUIC hides the site name, so flows stick by destination address.
+    let key = dst.ip().to_string();
+    let (lease, socket) = match router.bind_udp(dst.is_ipv6(), Some(&key)) {
+        Ok(bound) => bound,
+        Err(err) => {
+            log::debug!("udp {dst}: {err}");
+            return;
+        }
+    };
+    if let Err(err) = socket.connect(dst).await {
+        log::debug!("udp {dst}: {err}");
+        return;
+    }
+    let _ = flow.link.set(lease.link.id.clone());
+
+    let (mut in_r, mut in_w) = tokio::io::split(inbound);
+    let mut up = vec![0u8; MAX_DATAGRAM];
+    let mut down = vec![0u8; MAX_DATAGRAM];
+    let mut unanswered: u32 = 0;
+    loop {
+        tokio::select! {
+            // Questions first, so one already waiting is sent before an
+            // answer can end a DNS flow.
+            biased;
+            // The stack ends the flow (with an error) after it has been idle.
+            read = in_r.read(&mut up) => {
+                let Ok(n @ 1..) = read else { break };
+                if socket.send(&up[..n]).await.is_ok() {
+                    lease.count_tx(n as u64);
+                    flow.add_tx(n as u64);
+                    unanswered += 1;
+                }
+            }
+            received = socket.recv(&mut down) => match received {
+                Ok(n) => {
+                    if in_w.write_all(&down[..n]).await.is_err() {
+                        break;
+                    }
+                    lease.count_rx(n as u64);
+                    flow.add_rx(n as u64);
+                    // A DNS lookup is done once every question has its
+                    // answer. glibc asks for A and AAAA from one socket.
+                    unanswered = unanswered.saturating_sub(1);
+                    if dst.port() == DNS_PORT && unanswered == 0 {
+                        break;
+                    }
+                }
+                // An ICMP "port unreachable" for an earlier datagram; the
+                // flow itself may carry on.
+                Err(err) if err.kind() == io::ErrorKind::ConnectionReset => {}
+                Err(_) => break,
+            },
+        }
+    }
+}

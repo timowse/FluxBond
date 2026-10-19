@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- The menu bar icon: the FluxBond mark on a tile, teal while on (tray-on.png) and grey while
+       off (tray-off.png). scripts/render-icons.mjs greys the tile for "off". -->
+  <rect x="2" y="2" width="60" height="60" rx="14" id="tile" fill="#3ddbb4"/>
+  <g fill="none" stroke="#0c1016" stroke-linecap="round">
+    <g stroke-width="4.5">
+      <path d="M14 19 C 24 19 25 32 35 32"/>
+      <path d="M14 32 H 35"/>
+      <path d="M14 45 C 24 45 25 32 35 32"/>
+    </g>
+    <path d="M34 32 H 49" stroke-width="10"/>
+  </g>
+  <g fill="#0c1016">
+    <circle cx="14" cy="19" r="4.5"/>
+    <circle cx="14" cy="32" r="4.5"/>
+    <circle cx="14" cy="45" r="4.5"/>
+  </g>
+</svg>

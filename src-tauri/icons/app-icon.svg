@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- FluxBond: three networks (Wi-Fi, Ethernet, phone) flowing into one bond.
+       Rendered to the PNG, ICNS and ICO icons by scripts/render-icons.mjs. -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f2a38"/>
+      <stop offset="1" stop-color="#0c1016"/>
+    </linearGradient>
+    <linearGradient id="bond" gradientUnits="userSpaceOnUse" x1="560" y1="0" x2="840" y2="0">
+      <stop offset="0" stop-color="#2fcfa8"/>
+      <stop offset="1" stop-color="#9af5dc"/>
+    </linearGradient>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#tile)"/>
+  <rect x="101.5" y="101.5" width="821" height="821" rx="184.5" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="3"/>
+  <g fill="none" stroke-width="54" stroke-linecap="round">
+    <path d="M262 336 C 430 336 452 512 610 512" stroke="#4cc2ff"/>
+    <path d="M262 512 H 610" stroke="#b98cff"/>
+    <path d="M262 688 C 430 688 452 512 610 512" stroke="#ffb454"/>
+  </g>
+  <circle cx="262" cy="336" r="50" fill="#4cc2ff"/>
+  <circle cx="262" cy="512" r="50" fill="#b98cff"/>
+  <circle cx="262" cy="688" r="50" fill="#ffb454"/>
+  <path d="M592 512 H 772" stroke="url(#bond)" stroke-width="124" stroke-linecap="round"/>
+</svg>
